@@ -27,6 +27,15 @@
   background-color: gray;
   overflow: hidden;
 }
+.todolist li {
+    padding: 5px;
+    margin: 10px;
+    background-color: white;
+}
+.todolist li ul {
+    margin-bottom: 5px;
+}
+
 #buttonCommon {
   position: absolute;
   width: 360px;
