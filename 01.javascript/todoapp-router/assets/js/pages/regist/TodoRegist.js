@@ -34,6 +34,17 @@ const TodoRegist = function () {
     const registerTitle = document.createTextNode("등록 완료");
     newRegister.appendChild(registerTitle);
 
+    // modal area
+    const modal = document.createElement("div");
+    modal.classList.add("modal");
+    modal.style.display = "none"; // 초기 값 false
+
+    const modalContent = document.createElement("div");
+    modalContent.classList.add("modal-content");
+    const modalText = document.createTextNode("할일이 등록되었습니다 !");
+    modalContent.appendChild(modalText);
+    modal.appendChild(modalContent);
+
     inputForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
@@ -52,7 +63,11 @@ const TodoRegist = function () {
                 }
             );
             console.log("새로운 할일:", response.data);
-            linkTo("/"); // 이동할 경로 변경 필요
+            modal.style.display = "block"; // true
+            setTimeout(() => {
+                modal.style.display = "none";
+                linkTo("/");
+            }, 3000);
         } catch (error) {
             console.error("할일 추가 중 오류 발생:", error);
             const errorElement = document.createTextNode(
@@ -69,6 +84,7 @@ const TodoRegist = function () {
     inputForm.appendChild(input);
     inputForm.appendChild(textarea);
     inputForm.appendChild(newRegister);
+    page.appendChild(modal);
     page.appendChild(Footer());
 
     return page;
