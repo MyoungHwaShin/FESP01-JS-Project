@@ -35,7 +35,19 @@
 .todolist li ul {
     margin-bottom: 5px;
 }
-
+.checkbox {
+  cursor: pointer;  
+}
+a {
+    text-decoration: none;
+    color: black;
+}
+ul {
+    list-style: none;
+  }
+a:hover {
+    color: #1a73e8;
+  }
 #buttonCommon {
   position: absolute;
   width: 360px;
@@ -45,8 +57,17 @@
   bottom: 10px;
   transform: translateX(-50%);
   border-radius: 10px;
-  border: 0;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  color: white;
+  background-color: #1a73e8;
+  font-size: 16px;
 }
+#buttonCommon:hover {
+    background-color: #0058a3;
+  }
+  
 #form {
   /* background-color: red; */
 }

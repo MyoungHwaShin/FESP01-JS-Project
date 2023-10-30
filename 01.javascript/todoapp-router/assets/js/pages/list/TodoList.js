@@ -5,6 +5,24 @@ import TodoRegist from "../regist/TodoRegist.js";
 import TodoInfo from "../info/TodoInfo.js";
 import { linkTo } from "../../Router.js";
 
+const createCheckbox = (li) => {
+    const checkbox = document.createElement("span");
+    checkbox.innerHTML = "☐";
+    checkbox.className = "checkbox";
+
+    checkbox.addEventListener("click", function () {
+        checkbox.innerHTML = checkbox.innerHTML === "☐" ? "☑" : "☐";
+        checkbox.style.color = checkbox.innerHTML === "☑" ? "black" : "";
+        const title = li.querySelector("a");
+        // title 에 줄긋기
+        title.style.textDecoration =
+            checkbox.innerHTML === "☑" ? "line-through" : "none";
+        title.style.color = "black";
+    });
+
+    li.appendChild(checkbox);
+};
+
 const TodoList = async function () {
     const page = document.createElement("div");
     page.setAttribute("id", "page");
@@ -20,6 +38,10 @@ const TodoList = async function () {
 
         response.data?.items.forEach((item) => {
             const li = document.createElement("li");
+            li.style.listStyle = "none";
+            createCheckbox(li);
+            ul.appendChild(li);
+
             const todoInfoLink = document.createElement("a");
             todoInfoLink.setAttribute("href", `info?_id=${item._id}`);
             const title = document.createTextNode(item.title);
