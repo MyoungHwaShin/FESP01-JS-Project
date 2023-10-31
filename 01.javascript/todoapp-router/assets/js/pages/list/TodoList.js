@@ -5,24 +5,6 @@ import TodoRegist from "../regist/TodoRegist.js";
 import TodoInfo from "../info/TodoInfo.js";
 import { linkTo } from "../../Router.js";
 
-const createCheckbox = (li) => {
-    const checkbox = document.createElement("span");
-    checkbox.innerHTML = "☐";
-    checkbox.className = "checkbox";
-
-    checkbox.addEventListener("click", function () {
-        checkbox.innerHTML = checkbox.innerHTML === "☐" ? "☑" : "☐";
-        checkbox.style.color = checkbox.innerHTML === "☑" ? "black" : "";
-        const title = li.querySelector("a");
-        // title 에 줄긋기
-        title.style.textDecoration =
-            checkbox.innerHTML === "☑" ? "line-through" : "none";
-        title.style.color = "black";
-    });
-
-    li.appendChild(checkbox);
-};
-
 const TodoList = async function () {
     const page = document.createElement("div");
     page.setAttribute("id", "page");
@@ -35,39 +17,57 @@ const TodoList = async function () {
 
         const ul = document.createElement("ul");
         ul.setAttribute("class", "todolist");
-
         response.data?.items.forEach((item) => {
             const li = document.createElement("li");
-            li.style.listStyle = "none";
-            createCheckbox(li);
-            ul.appendChild(li);
+            const checkbox = document.createElement("input");
+            checkbox.setAttribute("type", "checkbox");
+            checkbox.setAttribute("id", "checkbox");
+
+            if (item.done) {
+                checkbox.setAttribute("checked", "true");
+            }
 
             const todoInfoLink = document.createElement("a");
             todoInfoLink.setAttribute("href", `info?_id=${item._id}`);
             const title = document.createTextNode(item.title);
 
             todoInfoLink.addEventListener("click", function (event) {
-                // 브라우저의 기본 동작 취소(<a> 태그 동작 안하도록)
                 event.preventDefault();
                 linkTo(todoInfoLink.getAttribute("href"));
-                // const infoPage = TodoInfo({_id: item._id});
-                // document.querySelector('#page').replaceWith(infoPage);
+            });
+
+            checkbox.addEventListener("change", async function () {
+                try {
+                    const body = {
+                        title: item.title,
+                        content: item.content,
+                        done: !item.done,
+                    };
+                    console.log(body);
+                    let response = await axios.patch(
+                        `http://localhost:33088/api/todolist/${item._id}`,
+                        body
+                    );
+                    console.log(response);
+                    alert("수정완료");
+
+                    if (this.checked) {
+                        todoInfoLink.style.color = "red";
+                        todoInfoLink.style.textDecoration = "line-through";
+                    } else {
+                        todoInfoLink.style.color = "";
+                        todoInfoLink.style.textDecoration = "none";
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
             });
 
             todoInfoLink.appendChild(title);
+            li.appendChild(checkbox);
             li.appendChild(todoInfoLink);
-
-            // const todoItemDiv = document.createElement("div");
-            // todoItemDiv.appendChild.add("todo-item");
-            // todoItemDiv.appendChild(document.createTextNode(`ID: ${item._id}`));
-            // todoItemDiv.appendChild(
-            // document.createTextNode(`Title: ${item.title}`)
-            // );
-
-            // li.appendChild(todoItemDiv);
             ul.appendChild(li);
         });
-
         content.appendChild(ul);
 
         const btnRegist = document.createElement("button");
@@ -86,7 +86,7 @@ const TodoList = async function () {
         content.appendChild(error);
     }
 
-    page.appendChild(Header("목록ddd조회"));
+    page.appendChild(Header("목록조회"));
     page.appendChild(content);
     page.appendChild(Footer());
     return page;
